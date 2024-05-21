@@ -28,12 +28,33 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public Boolean updateUser(UserModel user) throws ConnectionDataAccessException {
-        return null;
+        try{
+            PreparedStatement ps = connection.prepareStatement(" UPDATE user SET username = ?, password = ?, date_of_birth = ? , gender = ? , street_and_number = ? , phone_number = ? , bio = ? , admin = ? WHERE email = ?");
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setDate(3, (Date) user.getDateOfBirth());
+            ps.setString(4, String.valueOf(user.getGender()));
+            ps.setString(5, user.getStreetAndNumber());
+            ps.setString(6, user.getPhoneNumber());
+            ps.setString(7, user.getBio());
+            ps.setBoolean(8, user.isAdmin());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Boolean deleteUser(UserModel user) throws ConnectionDataAccessException {
-        return null;
+        try{
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM user WHERE email = ?");
+            ps.setString(1, user.getEmail());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
     public List<String> getColumnsNames() throws ConnectionDataAccessException {
         try {

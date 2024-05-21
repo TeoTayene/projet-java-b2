@@ -21,6 +21,7 @@ public class CountriesDAOImpl implements CountriesDAO {
     @Override
     public List<String> getCountries() throws CountriesDAOException {
         try {
+
             String sqlInstruction = "SELECT name FROM country";
             Statement preparedStatement = connection.createStatement();
             ResultSet resultSet = preparedStatement.executeQuery(sqlInstruction);
