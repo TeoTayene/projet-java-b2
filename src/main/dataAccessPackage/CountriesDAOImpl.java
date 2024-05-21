@@ -3,7 +3,10 @@ package main.dataAccessPackage;
 import main.exceptionPackage.ConnectionDataAccessException;
 import main.exceptionPackage.CountriesDAOException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +21,9 @@ public class CountriesDAOImpl implements CountriesDAO {
     @Override
     public List<String> getCountries() throws CountriesDAOException {
         try {
-            String query = "SELECT name FROM country";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            String sqlInstruction = "SELECT name FROM country";
+            Statement preparedStatement = connection.createStatement();
+            ResultSet resultSet = preparedStatement.executeQuery(sqlInstruction);
             countries = new ArrayList<>();
 
             while (resultSet.next()) {

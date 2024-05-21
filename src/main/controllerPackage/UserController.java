@@ -1,15 +1,12 @@
 package main.controllerPackage;
 
 import main.businessPackage.UserManager;
-import main.dataAccessPackage.UserDAO;
 import main.exceptionPackage.ConnectionDataAccessException;
-import main.exceptionPackage.LocalityException;
-import main.modelPackage.LocalityModel;
 import main.modelPackage.UserModel;
 
 import java.util.List;
 
-public class UserController implements UserDAO {
+public class UserController {
     private UserManager userManager;
 
     public UserController() throws ConnectionDataAccessException {
@@ -20,28 +17,16 @@ public class UserController implements UserDAO {
         return userManager.createUser(user);
     }
 
-    @Override
-    public List<UserModel> getAllUsers() throws ConnectionDataAccessException {
-        return userManager.getAllUsers();
+    public List<String> getColumnsNames() throws ConnectionDataAccessException {
+        return userManager.getColumnsNames();
     }
 
-    @Override
     public UserModel getUser(String email) throws ConnectionDataAccessException {
         return userManager.getUser(email);
     }
 
-    @Override
-    public Boolean updateUser(UserModel user) throws ConnectionDataAccessException {
-        return userManager.updateUser(user);
+    public List<UserModel> getAllUsers() throws ConnectionDataAccessException {
+        return userManager.getAllUsers();
     }
 
-    @Override
-    public Boolean deleteUser(UserModel user) throws ConnectionDataAccessException {
-        return userManager.deleteUser(user);
-    }
-
-    @Override
-    public List<LocalityModel> getLocality(String countryName) throws ConnectionDataAccessException, LocalityException {
-        return userManager.getLocality(countryName);
-    }
 }
