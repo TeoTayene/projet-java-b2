@@ -1,7 +1,6 @@
 package main.controllerPackage;
 
 import main.businessPackage.DirectMessageManager;
-import main.dataAccessPackage.DirectMessageDAO;
 import main.exceptionPackage.ConnectionDataAccessException;
 import main.exceptionPackage.DirectMessageException;
 import main.modelPackage.DirectMessageModel;

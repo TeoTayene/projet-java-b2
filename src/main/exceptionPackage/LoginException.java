@@ -1,9 +1,9 @@
 package main.exceptionPackage;
 
-public class UserCreationException extends Exception {
+public class LoginException extends Exception {
     private String error;
 
-    public UserCreationException(String e) {
+    public LoginException(String e) {
         setError(e);
     }
 
@@ -12,6 +12,7 @@ public class UserCreationException extends Exception {
     }
 
     public String toString() {
-        return "Erreur lors de la création de l'utilisateur : " + error;
+        return "Erreur lors de la connexion de l'utilisateur : " + error;
     }
 }
+

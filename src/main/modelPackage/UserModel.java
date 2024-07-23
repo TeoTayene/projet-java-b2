@@ -1,5 +1,7 @@
 package main.modelPackage;
 
+import main.utilPackage.FormValidator;
+
 import java.sql.Date;
 
 public class UserModel {
@@ -32,6 +34,7 @@ public class UserModel {
         setHome(home);
     }
 
+    // overload pour les messages privés car pas besoin de tout les champs
     public UserModel(String username) {
         setUsername(username);
     }
@@ -51,6 +54,14 @@ public class UserModel {
     }
 
     public void setEmail(String email) {
+        if (FormValidator.isFieldNull(email)
+                || FormValidator.isOneStringEmpty(email)
+                || FormValidator.stringContainsSpace(email)
+                || !FormValidator.validStringLength(email, 1, 50)
+                || !FormValidator.isValidEmail(email))
+           return;
+
+
         this.email = email;
     }
 
@@ -59,6 +70,9 @@ public class UserModel {
     }
 
     public void setUsername(String username) {
+        if (FormValidator.isFieldNull(username) || FormValidator.isOneStringEmpty(username) || !FormValidator.validStringLength(username, 1, 20))
+            return;
+
         this.username = username;
     }
 
@@ -67,6 +81,8 @@ public class UserModel {
     }
 
     public void setPassword(String password) {
+        if (FormValidator.isFieldNull(password) || FormValidator.isOneStringEmpty(password))
+            return;
         this.password = password;
     }
 
@@ -75,6 +91,8 @@ public class UserModel {
     }
 
     public void setDateOfBirth(Date dateOfBirth) {
+        if (FormValidator.isFieldNull(dateOfBirth) || !FormValidator.validDateOfBirth(dateOfBirth.toLocalDate()))
+            return;
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -83,6 +101,7 @@ public class UserModel {
     }
 
     public void setGender(char gender) {
+        if (!FormValidator.validGender(gender)) return;
         this.gender = gender;
     }
 
@@ -99,6 +118,8 @@ public class UserModel {
     }
 
     public void setStreetAndNumber(String streetAndNumber) {
+        if (FormValidator.isFieldNull(streetAndNumber) || FormValidator.isOneStringEmpty(streetAndNumber))
+            return;
         this.streetAndNumber = streetAndNumber;
     }
 

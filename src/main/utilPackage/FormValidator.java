@@ -18,16 +18,32 @@ public class FormValidator {
         return matcher.matches();
     }
 
+    public static Boolean isNumberValid(String number) {
+        // Expression régulière pour correspondre à un nombre
+        String numberRegex = "^[0-9]+$";
+
+        Pattern pattern = Pattern.compile(numberRegex);
+
+        // Vérification du nombre par rapport au pattern
+        Matcher matcher = pattern.matcher(number);
+
+        return matcher.matches();
+    }
+
     public static Boolean validDateOfBirth(LocalDate dob) {
         LocalDate date1900 = LocalDate.of(1899, 12, 31);
-        LocalDate today = LocalDate.now().plusDays(1);
+        LocalDate dateToday = LocalDate.now().plusDays(1);
 
-        return dob.isAfter(date1900) && dob.isBefore(today);
+        return dob.isAfter(date1900) && dob.isBefore(dateToday);
+    }
+
+    public static Boolean stringContainsSpace(String str) {
+        return str.length() != str.trim().length();
     }
 
     public static Boolean isOneStringEmpty(String... strings) {
         for (String string : strings) {
-            if (string.isEmpty()) {
+            if (string.trim().isEmpty()) {
                 return true;
             }
         }

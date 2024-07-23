@@ -35,12 +35,10 @@ public class ListingPanel extends JPanel implements ActionListener {
         gapPanel.setPreferredSize(new Dimension(0, 20)); // 20 pixels height gap
         add(gapPanel, BorderLayout.CENTER);
 
-        // Table in the center
         tableUsers = new JTable();
         scrollPane = new JScrollPane(tableUsers);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Buttons at the bottom
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
@@ -74,10 +72,21 @@ public class ListingPanel extends JPanel implements ActionListener {
         }
         else if (e.getSource() == buttonDelete) {
             int[] selectedRows = tableUsers.getSelectedRows();
+
             if (selectedRows.length == 0) {
                 mainWindow.displayError("Veuillez sélectionner un ou plusieurs utilisateurs à supprimer");
             } else {
+                int result = JOptionPane.showConfirmDialog(mainWindow,
+                        "Êtes-vous sûr de vouloir supprimer cet utilisateur ? \n" +
+                                "Cette action supprimera tous les posts, communautés, messages " +
+                                "et likes associés à cet utilisateur.", "Confirmer la suppression",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result != JOptionPane.YES_OPTION)
+                    return;
+
                 try {
+                    // reset la variable si elle a déjà été utilisée
                     if (!allDeleted) allDeleted = true;
 
                     for (int selectedRow : selectedRows) {

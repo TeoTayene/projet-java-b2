@@ -90,29 +90,22 @@ public class MenuBar implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == home) {
             mainWindow.switchPanel(mainWindow.getHomePanel());
-        }   else if (e.getSource() == JobTaskCountry) {
-            mainWindow.switchPanel(mainWindow.getJobTaskAgePanel());
-        }
-        else if (e.getSource() == JobTaskAge) {
+        } else if (e.getSource() == JobTaskCountry) {
             mainWindow.switchPanel(mainWindow.getJobTaskCountryPanel());
-        }
-        else if (e.getSource() == listing) {
+        } else if (e.getSource() == JobTaskAge) {
+            mainWindow.switchPanel(mainWindow.getJobTaskAgePanel());
+        } else if (e.getSource() == listing) {
             mainWindow.switchPanel(mainWindow.getListingPanel());
-        }
-        else if (e.getSource() == researchLike) {
+        } else if (e.getSource() == researchLike) {
             mainWindow.switchPanel(mainWindow.getResearchLike());
-        }
-        else if (e.getSource() == researchCommunity) {
+        } else if (e.getSource() == researchCommunity) {
             mainWindow.switchPanel(mainWindow.getResearchCommunity());
-        }
-        else if (e.getSource() == researchPrivateMessage) {
+        } else if (e.getSource() == researchPrivateMessage) {
             mainWindow.switchPanel(mainWindow.getResearchPrivateMessage());
-        }
-        else if (e.getSource() == likeAnimation) {
+        } else if (e.getSource() == likeAnimation) {
             mainWindow.switchPanel(mainWindow.getThreadPanel());
-        }
-        else if (e.getSource() == exit) {
-            System.exit(0);
+        } else if (e.getSource() == exit) {
+            mainWindow.exit();
         }
     }
 }

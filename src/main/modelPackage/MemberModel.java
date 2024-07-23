@@ -9,11 +9,6 @@ public class MemberModel {
     private int zipCode;
     private String country ;
 
-    public MemberModel(Integer community, Integer user) {
-        this.community = community;
-        this.user = user;
-    }
-
     public MemberModel(String username, String streetAndNumber, String locationName, int zipCode, String country) {
         setUsername(username);
         setStreetAndNumber(streetAndNumber);

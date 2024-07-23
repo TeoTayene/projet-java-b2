@@ -24,20 +24,19 @@ public class ResearchCommunity  extends JPanel implements ActionListener {
     public ResearchCommunity(MainWindow mainWindow) throws ConnectionDataAccessException {
         this.mainWindow = mainWindow;
 
-        JLabel welcomeText = new JLabel("Selectionner la commmunauté pour laquelle vous voulez voir les utilisateurs :");
-        welcomeText.setFont(new Font("Arial", Font.BOLD, 16));
-        welcomeText.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel title = new JLabel("Sélectionner la commmunauté pour laquelle vous voulez voir les utilisateurs :");
+        title.setFont(new Font("Arial", Font.BOLD, 16));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // titre
+        
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        add(welcomeText, gbc);
+        add(title, gbc);
 
         communityController = new CommunityController();
         communityComboBox = new JComboBox<>();
@@ -78,7 +77,6 @@ public class ResearchCommunity  extends JPanel implements ActionListener {
         for (CommunityModel community : communities) {
             communityComboBox.addItem(community.getName());
         }
-        communityComboBox.setSelectedIndex(0);
     }
 
     private void resetRows() {

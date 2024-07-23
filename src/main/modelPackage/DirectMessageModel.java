@@ -1,7 +1,5 @@
 package main.modelPackage;
 
-import java.util.Date;
-
 public class DirectMessageModel {
     private UserModel sender;
     private String text;

@@ -1,31 +1,23 @@
 package main.modelPackage;
 
 public class CommunityModel {
-
     private int id;
-
     private String name;
-
     private Integer creator;
 
-
-
-
     public CommunityModel(int id, String name, Integer creator) {
-        this.id = id;
-        this.name = name;
-        this.creator = creator;
+        setId(id);
+        setName(name);
+        setCreator(creator);
     }
 
-    public CommunityModel(){
-    }
     public int getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }
-
 
     public void setName(String name) {
         this.name = name;

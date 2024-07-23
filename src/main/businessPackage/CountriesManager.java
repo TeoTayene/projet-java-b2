@@ -21,4 +21,11 @@ public class CountriesManager {
     public List<String> getCountries() throws CountriesDAOException {
         return countriesDAO.getCountries();
     }
+
+    public Boolean countryExists(String country) throws CountriesDAOException {
+        List<String> countries = getCountries();
+        countries.replaceAll(String::toLowerCase);
+
+        return countries.contains(country.toLowerCase());
+    }
 }

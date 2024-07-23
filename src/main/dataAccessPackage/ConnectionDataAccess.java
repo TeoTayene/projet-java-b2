@@ -22,4 +22,16 @@ public class ConnectionDataAccess {
         }
         return connection;
     }
+
+    public static void closeConnection() throws ConnectionDataAccessException {
+        if (connection != null) {
+            try {
+                connection.close();
+                // si jamais on décide de fermer la connexion sans quitter le programme
+                connection = null;
+            } catch (SQLException e) {
+                throw new ConnectionDataAccessException(e.getMessage());
+            }
+        }
+    }
 }

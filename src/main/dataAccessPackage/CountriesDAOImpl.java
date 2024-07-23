@@ -9,7 +9,6 @@ import java.util.List;
 
 public class CountriesDAOImpl implements CountriesDAO {
     private Connection connection;
-    private List<String> countries;
 
     public CountriesDAOImpl() throws ConnectionDataAccessException {
         connection = ConnectionDataAccess.getInstance();
@@ -17,6 +16,7 @@ public class CountriesDAOImpl implements CountriesDAO {
 
     @Override
     public List<String> getCountries() throws CountriesDAOException {
+        List<String> countries;
         try {
             String sql = "SELECT name FROM country";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);

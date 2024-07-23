@@ -12,7 +12,6 @@ import main.exceptionPackage.ConnectionDataAccessException;
 import main.exceptionPackage.DirectMessageException;
 import main.exceptionPackage.UserSearchException;
 import main.modelPackage.DirectMessageModel;
-import main.modelPackage.LikeModel;
 import main.modelPackage.NonEditableTableModel;
 import main.modelPackage.UserModel;
 
@@ -27,20 +26,19 @@ public class ResearchPrivateMessage  extends JPanel implements ActionListener {
         userController = new UserController();
         directMessageController = new DirectMessageController();
 
-        JLabel welcomeText = new JLabel("Selectioner l'email d'un utilisateur pour voir ses messages privés : ");
-        welcomeText.setFont(new Font("Arial", Font.BOLD, 16));
-        welcomeText.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel title = new JLabel("Selectioner l'email d'un utilisateur pour voir ses messages privés : ");
+        title.setFont(new Font("Arial", Font.BOLD, 16));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // titre
+        
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        add(welcomeText, gbc);
+        add(title, gbc);
 
         privateMessageComboBox.setPreferredSize(new Dimension(200, 30));
         gbc.gridx = 0;
@@ -57,7 +55,7 @@ public class ResearchPrivateMessage  extends JPanel implements ActionListener {
         add(searchButton, gbc);
         searchButton.addActionListener(this);
 
-        String[] columnNames = {"Nom de l'envoyeur", "Text", "URL du media", "Type du media"};
+        String[] columnNames = {"Nom du receveur", "Text", "URL du media", "Type du media"};
         tableModel = new NonEditableTableModel(columnNames, 0);
         JTable tableDm = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(tableDm);

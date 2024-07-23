@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommunityDAOImpl implements CommunityDAO {
-    private final Connection connection;
+    private Connection connection;
 
     public CommunityDAOImpl() throws ConnectionDataAccessException {
         connection = ConnectionDataAccess.getInstance();

@@ -10,7 +10,7 @@ import java.util.List;
 import java.sql.*;
 
 public class LikeDAOImpl implements LikeDAO {
-    private final Connection connection;
+    private Connection connection;
 
     public LikeDAOImpl() throws ConnectionDataAccessException {
         connection = ConnectionDataAccess.getInstance();
@@ -24,7 +24,8 @@ public class LikeDAOImpl implements LikeDAO {
                     "FROM social_network.like l " +
                     "JOIN user u ON l.liked_by = u.id " +
                     "JOIN post p ON l.post_liked = p.id " +
-                    "WHERE l.date BETWEEN ? AND ?";
+                    "WHERE l.date BETWEEN ? AND ? ORDER BY l.date DESC";
+
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setDate(1, startDate);
             preparedStatement.setDate(2, endDate);
@@ -41,7 +42,6 @@ public class LikeDAOImpl implements LikeDAO {
             }
 
             if (likes.isEmpty()) throw new LikeSearchException("Aucun like trouvé pour cette période.");
-
             return likes;
         } catch (SQLException e) {
             throw new LikeSearchException(e.getMessage());

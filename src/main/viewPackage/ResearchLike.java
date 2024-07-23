@@ -23,9 +23,9 @@ public class ResearchLike extends JPanel implements ActionListener {
     public ResearchLike() throws ConnectionDataAccessException {
         likeController = new LikeController();
 
-        JLabel welcomeText = new JLabel("Selectionner une plage de dates pour trouver les likes entre ces dates :");
-        welcomeText.setFont(new Font("Arial", Font.BOLD, 16));
-        welcomeText.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel title = new JLabel("Sélectionner une plage de dates pour trouver les likes entre ces dates :");
+        title.setFont(new Font("Arial", Font.BOLD, 16));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -35,7 +35,7 @@ public class ResearchLike extends JPanel implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        add(welcomeText, gbc);
+        add(title, gbc);
 
         JLabel startDateLabel = new JLabel("Date de début :");
         gbc.gridx = 0;

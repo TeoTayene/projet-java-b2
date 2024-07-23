@@ -34,6 +34,7 @@ public class Encryption {
         return stored.split(":")[1];
     }
 
+    // verifie un mdp entre en clair par un user avec un mdp stocker en DB
     public static boolean verifyPassword(String inputPassword, String storedPassword) throws NoSuchAlgorithmException {
         byte[] extractedSalt = extractSalt(storedPassword);
         String hashedInputPassword = hashPassword(inputPassword, extractedSalt);

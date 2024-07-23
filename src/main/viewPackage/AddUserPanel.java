@@ -31,7 +31,6 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
 
     private MainWindow mainWindow;
     private int nbFields = 0;
-    private JLabel topLabel;
     private JTextField username;
     private JPasswordField password;
     private JTextField email;
@@ -45,12 +44,9 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
     private JComboBox<LocalityItem> zipCode;
     private JComboBox<String> country;
     private JComboBox<String> gender;
-    private Dimension textFieldSize = new JTextField(TEXT_FIELD_COLUMNS).getPreferredSize();
     private UserModel oldUserData;
-    private enum typeOfInsert {ADD, UPDATE};
+    private enum typeOfInsert {ADD, UPDATE}
     private typeOfInsert currentAction;
-
-    private CountriesController countriesController;
     private UserController userController;
 
 
@@ -59,7 +55,7 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
     }
 
     public AddUserPanel(MainWindow mainWindow, UserModel user) throws CountriesDAOException, ConnectionDataAccessException, LocalityException {
-        countriesController = new CountriesController();
+        CountriesController countriesController = new CountriesController();
         userController = new UserController();
         oldUserData = user;
         currentAction = oldUserData == null ? typeOfInsert.ADD : typeOfInsert.UPDATE;
@@ -70,7 +66,7 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(LABEL_PADDING, LABEL_PADDING, LABEL_PADDING, LABEL_PADDING);
 
-        topLabel = new JLabel(currentAction == typeOfInsert.ADD ? "Création d'un utilisateur" : "Modification d'un utilisateur");
+        JLabel topLabel = new JLabel(currentAction == typeOfInsert.ADD ? "Création d'un utilisateur" : "Modification d'un utilisateur");
         gbc.gridx = 0;
         gbc.gridy = nbFields;
         gbc.gridwidth = 2;
@@ -88,6 +84,7 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
         dateOfBirthModel = new SpinnerDateModel();
         dateOfBirthSpinner = new JSpinner(dateOfBirthModel);
         dateOfBirthSpinner.setEditor(new JSpinner.DateEditor(dateOfBirthSpinner, "dd/MM/yyyy"));
+        Dimension textFieldSize = new JTextField(TEXT_FIELD_COLUMNS).getPreferredSize();
         dateOfBirthSpinner.setPreferredSize(textFieldSize);
 
         addField(gbc, "Date de naissance *", dateOfBirthSpinner);
@@ -117,7 +114,7 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
         submit.addActionListener(this);
         addField(gbc, "", submit);
 
-        if (currentAction == typeOfInsert.UPDATE) {
+        if (currentAction == typeOfInsert.UPDATE && user != null) {
             populateUserFields(user);
         }
 
@@ -156,19 +153,48 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == submit) {
             if (validateForm()) {
-                UserModel newUser = createUserFromModel();
-
                 try {
+                    UserModel newUser = createUserFromModel();
+
                     if (currentAction == typeOfInsert.ADD) {
-                        userController.createUser(newUser);
-                        mainWindow.displayMessage("Utilisateur créé avec succès", "Succès");
+                        if (userController.getAllUsers().stream().anyMatch(user -> user.getEmail().equals(newUser.getEmail()))) {
+                            mainWindow.displayError("Un utilisateur avec cet email existe déjà");
+                            return;
+                        }
+
+                        if (userController.getAllUsers().stream().anyMatch(user -> user.getUsername().equals(newUser.getUsername()))) {
+                            mainWindow.displayError("Un utilisateur avec ce nom d'utilisateur existe déjà");
+                            return;
+                        }
+
+                        if (userController.createUser(newUser))
+                            mainWindow.displayMessage("Utilisateur créé avec succès", "Succès");
+                        else
+                            mainWindow.displayError("Erreur lors de la création de l'utilisateur");
                     } else if (currentAction == typeOfInsert.UPDATE) {
+                        String oldEmail = oldUserData.getEmail();
+                        String newEmail = newUser.getEmail();
+                        String oldUsername = oldUserData.getUsername();
+                        String newUsername = newUser.getUsername();
+
+                        if (!oldEmail.equals(newEmail) && userController.getAllUsers().stream().anyMatch(user -> user.getEmail().equals(newEmail))) {
+                            mainWindow.displayError("Un utilisateur avec cet email existe déjà");
+                            return;
+                        }
+
+                        if (!oldUsername.equals(newUsername) && userController.getAllUsers().stream().anyMatch(user -> user.getUsername().equals(newUsername))) {
+                            mainWindow.displayError("Un utilisateur avec ce nom d'utilisateur existe déjà");
+                            return;
+                        }
+
                         newUser.setId(oldUserData.getId());
-                        userController.updateUser(newUser);
-                        mainWindow.displayMessage("Utilisateur modifié avec succès", "Succès");
+                        if (userController.updateUser(newUser))
+                            mainWindow.displayMessage("Utilisateur modifié avec succès", "Succès");
+                        else
+                            mainWindow.displayError("Erreur lors de la modification de l'utilisateur");
                     }
                     mainWindow.switchPanel(mainWindow.getListingPanel());
-                } catch (UserCreationException | UpdateUserException ex) {
+                } catch (UserCreationException | UpdateUserException | UserSearchException ex) {
                     mainWindow.displayError(ex.toString());
                 }
             }
@@ -179,22 +205,22 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
         UserModel user = new UserModel();
         Date dob = new Date(dateOfBirthModel.getDate().getTime());
         
-        user.setEmail(email.getText());
-        user.setUsername(username.getText());
-        user.setPassword(new String(password.getPassword()));
+        user.setEmail(email.getText().trim());
+        user.setUsername(username.getText().trim());
+        user.setPassword(new String(password.getPassword()).trim());
         user.setDateOfBirth(dob);
 
         if (Objects.requireNonNull(gender.getSelectedItem()).equals(GENDER_MAN_STRING)) user.setGender('m');
         else if (Objects.requireNonNull(gender.getSelectedItem()).equals(GENDER_WOMAN_STRING)) user.setGender('w');
         else user.setGender('o');
 
-        user.setStreetAndNumber(street.getText());
+        user.setStreetAndNumber(street.getText().trim());
 
-        if (phoneNumber.getText().isEmpty()) user.setPhoneNumber(null);
-        else user.setPhoneNumber(phoneNumber.getText());
+        if (phoneNumber.getText().trim().isEmpty()) user.setPhoneNumber(null);
+        else user.setPhoneNumber(phoneNumber.getText().trim());
 
-        if (bio.getText().isEmpty()) user.setBio(null);
-        else user.setBio(bio.getText());
+        if (bio.getText().trim().isEmpty()) user.setBio(null);
+        else user.setBio(bio.getText().trim());
 
         user.setAdmin(isAdmin.isSelected());
         user.setHome(((LocalityItem) Objects.requireNonNull(zipCode.getSelectedItem())).getLocalityId());
@@ -202,10 +228,11 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
     }
 
     private Boolean validateForm() {
-        String emailText = email.getText();
-        String usernameText = username.getText();
-        String passwordText = new String(password.getPassword());
-        String streetText = street.getText();
+        String emailText = email.getText().trim();
+        String usernameText = username.getText().trim();
+        String passwordText = new String(password.getPassword()).trim();
+        String phoneNumberText = phoneNumber.getText().trim();
+        String streetText = street.getText().trim();
         LocalityItem selectedItem = (LocalityItem) zipCode.getSelectedItem();
         LocalDate dob = dateOfBirthModel.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
@@ -243,6 +270,11 @@ public class AddUserPanel extends JPanel implements ActionListener, ItemListener
 
         if (!FormValidator.isValidEmail(emailText)) {
             mainWindow.displayError("L'email n'est pas valide (format : x@x.x)");
+            return false;
+        }
+
+        if (!FormValidator.isOneStringEmpty(phoneNumberText) && !FormValidator.isNumberValid(phoneNumberText)) {
+            mainWindow.displayError("Le numéro de téléphone n'est pas valide (chiffres uniquement)");
             return false;
         }
 

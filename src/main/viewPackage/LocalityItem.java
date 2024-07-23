@@ -1,8 +1,8 @@
 package main.viewPackage;
 
 public class LocalityItem {
-    private final String formattedLocality;
-    private final int localityId;
+    private String formattedLocality;
+    private int localityId;
 
     public LocalityItem(String formattedLocality, int localityId) {
         this.formattedLocality = formattedLocality;

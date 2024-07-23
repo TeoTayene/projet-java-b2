@@ -8,6 +8,7 @@ import main.modelPackage.UserModel;
 import main.utilPackage.FormValidator;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class UserManager implements UserDAO {
@@ -21,8 +22,8 @@ public class UserManager implements UserDAO {
         this.userDAO = dao;
     }
 
-    public void createUser(UserModel user) throws UserCreationException {
-        if (validUser(user)) userDAO.createUser(user);
+    public Boolean createUser(UserModel user) throws UserCreationException {
+        return validUser(user) ? userDAO.createUser(user) : false;
     }
 
     private Boolean validUser(UserModel user) throws UserCreationException {
@@ -36,6 +37,23 @@ public class UserManager implements UserDAO {
         String biography = user.getBio();
         Boolean isAdmin = user.isAdmin();
         Integer home = user.getHome();
+
+        if (FormValidator.isFieldNull(email)
+                || FormValidator.isFieldNull(username)
+                || FormValidator.isFieldNull(password)
+                || FormValidator.isFieldNull(dateOfBirth)
+                || FormValidator.isFieldNull(gender)
+                || FormValidator.isFieldNull(streetAndNumber)
+                || FormValidator.isFieldNull(isAdmin)
+                || FormValidator.isFieldNull(home))
+            throw new UserCreationException("Un ou plusieurs champs sont nuls");
+
+        if (FormValidator.isOneStringEmpty(email, username, password, streetAndNumber))
+            throw new UserCreationException("Un ou plusieurs champs sont vides");
+
+        if (FormValidator.stringContainsSpace(email) || FormValidator.stringContainsSpace(username)
+                || FormValidator.stringContainsSpace(password))
+            throw new UserCreationException("Un ou plusieurs champs contiennent des espaces");
 
         if (!FormValidator.validStringLength(email, 1, 50))
             throw new UserCreationException("L'email doit être compris entre 1 et 50 caractères");
@@ -76,14 +94,12 @@ public class UserManager implements UserDAO {
     }
 
     @Override
-    public UserModel getUser(int id) throws UserSearchException {return userDAO.getUser(id);}
+    public UserModel getUser(int id) throws UserSearchException { 
+        return userDAO.getUser(id);
+    }
 
-    public void updateUser(UserModel user) throws UpdateUserException {
-        try {
-            if (validUser(user)) userDAO.updateUser(user);
-        } catch (UserCreationException e) {
-            throw new UpdateUserException(e.getError());
-        }
+    public Boolean updateUser(UserModel user) throws UpdateUserException, UserCreationException {
+        return validUser(user) ? userDAO.updateUser(user) : false;
     }
 
     @Override
@@ -105,13 +121,55 @@ public class UserManager implements UserDAO {
         return userDAO.getCountryNameByHome(userId);
     }
 
-    public int numbUser() throws UserSearchException {return userDAO.numbUser();}
+    public int getNbUser() throws UserSearchException {
+        return userDAO.getNbUser();
+    }
 
     public List<UserModel> getUsersByCountry(String name) throws UserSearchException {
+        if (FormValidator.isFieldNull(name))
+            throw new UserSearchException("Le nom du pays est nul");
+
+        if (FormValidator.isOneStringEmpty(name))
+            throw new UserSearchException("Le nom du pays est vide");
+
+        try {
+            CountriesManager countriesManager = new CountriesManager();
+            if (!countriesManager.countryExists(name))
+                throw new UserSearchException("Le pays " + name + " n'existe pas");
+        } catch (ConnectionDataAccessException | CountriesDAOException e) {
+            throw new UserSearchException(e.toString());
+        }
+
         return userDAO.getUsersByCountry(name);
     }
 
-    public List<UserModel> getUsersByAge(Date ageDebut, Date ageEnd) throws UserSearchException {
-        return userDAO.getUsersByAge(ageDebut, ageEnd);
+    public List<UserModel> getUsersByAge(Date startDateOfBirth, Date endDateOfBirth) throws UserSearchException {
+        int MAX_USERS = 100;
+        if (FormValidator.isFieldNull(startDateOfBirth) || FormValidator.isFieldNull(endDateOfBirth))
+            throw new UserSearchException("Les dates de naissance sont nulles");
+
+        if (!FormValidator.validDateOfBirth(startDateOfBirth.toLocalDate()) || !FormValidator.validDateOfBirth(endDateOfBirth.toLocalDate()))
+            throw new UserSearchException("Les dates de naissance ne sont pas valides");
+
+        if (startDateOfBirth.after(endDateOfBirth))
+            throw new UserSearchException("La date de début doit être antérieure à la date de fin");
+
+        if (endDateOfBirth.toLocalDate().isAfter(Date.valueOf(LocalDate.now()).toLocalDate()))
+            throw new UserSearchException("La date de fin ne peut pas être dans le futur");
+
+        List<UserModel> users = userDAO.getUsersByAge(startDateOfBirth, endDateOfBirth);
+
+        if (users.isEmpty())
+            throw new UserSearchException("Aucun utilisateur trouvé");
+
+        if (users.size() > MAX_USERS)
+            throw new UserSearchException("Trop d'utilisateurs trouvés");
+
+        return users;
+    }
+
+    @Override
+    public Boolean login(int id, String email, String password) throws LoginException {
+        return userDAO.login(id, email, password);
     }
 }

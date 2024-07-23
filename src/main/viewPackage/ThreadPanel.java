@@ -5,12 +5,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ThreadPanel extends JPanel implements ActionListener, MouseListener {
-    private final JLabel likeLabel;
     private static final int NORMAL_SIZE = 50;
     private static final int LARGE_SIZE = 250;
-    private static final int ANIMATION_DURATION = 1000; // 3 secondes
+    private static final int ANIMATION_DURATION = 1000;
     private static final int FRAME_RATE = 30;
 
+    private JLabel likeLabel;
     private int newSize = NORMAL_SIZE;
     private Timer enlargeTimer;
     private Timer shrinkTimer;
